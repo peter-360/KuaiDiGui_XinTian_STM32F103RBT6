@@ -50,8 +50,8 @@ void EXTIX_Init(void)
 
 
    	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;			//使能按键所在的外部中断通道
-  	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02;	//抢占优先级2， 
-  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;					//子优先级1
+  	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;	//抢占优先级2， 
+  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;					//子优先级1
   	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;								//使能外部中断通道
   	NVIC_Init(&NVIC_InitStructure); 
 		
@@ -89,18 +89,27 @@ void EXTI9_5_IRQHandler(void)
 	//SEGGER_RTT_printf(0, "EXTI1_IRQHandler\n"); 
   //delay_ms(10);    //消抖			 
   //if(GI_2==0)//
-	if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_8) ==1)	
+//	if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_8) ==1)	
 	{
-		SEGGER_RTT_printf(0, "2-high-EXTI8_IRQHandler\n"); 
-		lock_jiance_flag=1;
+//		SEGGER_RTT_printf(0, "2-high-EXTI8_IRQHandler\n"); 
+//		lock_jiance_flag=1;
 		//LED2_LOCK = !LED2_LOCK;
 		//LED1=!LED1;
+		delay_us(15);  //100
+		lock_jiance_flag=1;
+		lock_all_off();
+		
+		delay_us(20);  //100
+		LED2_CTL = 1;
+		delay_ms(100);  //100
+		LED2_CTL = 0;
+		SEGGER_RTT_printf(0, "----------d3------------\n");
 	}
-	else
-	{
-		SEGGER_RTT_printf(0, "2-low-EXTI8_IRQHandler\n"); 
-		//LED1=!LED1;
-	}
+//	else
+//	{
+//		SEGGER_RTT_printf(0, "2-low-EXTI8_IRQHandler\n"); 
+//		//LED1=!LED1;
+//	}
 	
 	
 	EXTI_ClearITPendingBit(EXTI_Line8);  //清除LINE15线路挂起位   EXTI9_5_IRQn

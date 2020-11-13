@@ -29,7 +29,7 @@ static void RS485_delay(__IO u32 nCount)
 
 #define LED1 PAout(15)	// PD2	green
 #define LED2_LOCK PBout(5)	// 	out
-//#define LED2_CTL PBout(7)	// 	out 100ms   ?
+#define LED2_CTL PAout(12)	// 	out 100ms   ?
 
 
 #define GO_1 PAout(0)	//

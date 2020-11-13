@@ -579,10 +579,10 @@ void data_parse()
 	uint8_t bcc_temp;
 	uint8_t tx_Buffer[256]={0};        //?????
 	//uint8_t length = 0;             //??
-	uint8_t gpio_level;
-	uint8_t grp_level_1;
-	uint8_t grp_level_2;
-	uint8_t grp_level_3;
+	uint8_t gpio_level=0;//add
+	uint8_t grp_level_1=0;
+	uint8_t grp_level_2=0;
+	uint8_t grp_level_3=0;
 	uint8_t board_addr;
 	
 	uint8_t Uart1_Buffer_T[256]={0};        //?????

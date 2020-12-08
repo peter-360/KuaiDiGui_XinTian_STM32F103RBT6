@@ -3,7 +3,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK miniSTM32开发板
+//ALIENTEK mini?SSTM32开发板
 //LED驱动代码	   
 //正点原子@ALIENTEK
 //技术论坛:www.openedv.com
@@ -61,7 +61,7 @@ void LED_Init(void)
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;	    		 //LED1-->PB5 端口配置, 推挽输出
 	GPIO_Init(GPIOA, &GPIO_InitStructure);	  				 //推挽输出 ，IO口速度为50MHz
-	GPIO_ResetBits(GPIOB,GPIO_Pin_12); 						 //输出高 
+	GPIO_SetBits(GPIOA,GPIO_Pin_12); 						 //输出高 
 
 
 //	//i group1
@@ -310,7 +310,7 @@ void TIM4_IRQHandler(void)   //TIM4中断
 		//LED1=!LED1;
 		//Uart1_Rx =0 ;
 		
-		if(3== key_mode)
+		if(2== key_mode)
 		{
 			SEGGER_RTT_printf(0, "mode3-lock_channel= %d\n",lock_channel);
 			if(lock_channel <=25)
@@ -319,18 +319,21 @@ void TIM4_IRQHandler(void)   //TIM4中断
 				{
 					SEGGER_RTT_printf(0, "lock_channel=%d\n",lock_channel);
 					case 1://power on
+						LED2_CTL = 0;
 						GO_1=1; 					//open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						
+						delay_ms(800);
+						LED2_CTL = 1;  
 						GO_1=0;						//close
 						
 						
 					
 						break;
 					case 2://
+						LED2_CTL = 0;
 						GO_2=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800);
+						LED2_CTL = 1; 
 						GO_2=0;	 						 //close
 						
 					
@@ -338,180 +341,202 @@ void TIM4_IRQHandler(void)   //TIM4中断
 			
 		
 					case 3:
+					LED2_CTL = 0;
 						GO_3=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800);
+						LED2_CTL = 1; 
 						GO_3=0;	 						 //close
 						
 
 						break;
 					case 4:
+					LED2_CTL = 0;
 						GO_4=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800);
+						LED2_CTL = 1; 
 						GO_4=0;	 						 //close
 						
 
 
 						break;
 					case 5:
+					LED2_CTL = 0;
 						GO_5=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800);
+						LED2_CTL = 1; 
 						GO_5=0;	 						 //close
 						
 
 						break;
 					case 6:
+					LED2_CTL = 0;
 						GO_6=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800);
+						LED2_CTL = 1; 
 						GO_6=0;	 						 //close
 						
 
 						break;
 					case 7:
+					LED2_CTL = 0;
 						GO_7=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_7=0;	 						 //close
 						
 
 
 						break;
 					case 8:
-						GO_8=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						LED2_CTL = 0;
+						GO_8=1;						 //open
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_8=0;	 						 //close
 						
 
 						break;
 					case 9:
+						LED2_CTL = 0;
 						GO_9=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_9=0;	 						 //close
 						
 
 						break;
 					case 10:
+						LED2_CTL = 0;
 						GO_10=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_10=0;	 						 //close
 						
 
 
 						break;
 					case 11:
+						LED2_CTL = 0;
 						GO_11=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1; 
 						GO_11=0;	 						 //close
 						
 
 						break;
 					case 12:
+						LED2_CTL = 0;
 						GO_12=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;  
 						GO_12=0;	 						 //close
 						
 					
 						break;
 					case 13:
+						LED2_CTL = 0;
 						GO_13=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1; 
 						GO_13=0;	 						 //close
 						
 
 						break;
 					case 14:
+						LED2_CTL = 0;
 						GO_14=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_14=0;	 						 //close
 						
 
 						break;
 					case 15:
+						LED2_CTL = 0;
 						GO_15=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_15=0;	 						 //close
 						
 
 						break;
 					case 16:
+						LED2_CTL = 0;
 						GO_16=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_16=0;	 						 //close
 						
 
 						break;
 					case 17:
+						LED2_CTL = 0;
 						GO_17=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_17=0;	 						 //close
 						
 
 						break;
 					case 18:
+						LED2_CTL = 0;
 						GO_18=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_18=0;	 						 //close
 						
 
 						break;
 					case 19:
+						LED2_CTL = 0;
 						GO_19=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_19=0;	 						 //close
 						
 					
 						break;
 					case 20:
+						LED2_CTL = 0;
 						GO_20=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1; 
 						GO_20=0;	 						 //close
 						
 
 						break;
 					case 21:
+						LED2_CTL = 0;
 						GO_21=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_21=0;	 						 //close
 						
 
 						break;
 					case 22:
+						LED2_CTL = 0;
 						GO_22=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_22=0;	 						 //close
 						
 
 						break;
 					case 23:
+						LED2_CTL = 0;
 						GO_23=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1; 
 						GO_23=0;	 						 //close
 						
 
 						break;
 					case 24:
+						LED2_CTL = 0;
 						GO_24=1;							 //open
-						//LED2_CTL = 1;
-						delay_ms(100);  
+						delay_ms(800); 
+						LED2_CTL = 1;
 						GO_24=0;	 						 //close
 						
 
@@ -535,298 +560,7 @@ void TIM4_IRQHandler(void)   //TIM4中断
 		}
 		
 		
-		if(2== key_mode)
-		{
-			SEGGER_RTT_printf(0, "mode3-lock_channel_mode2= %d\n",lock_channel_mode2);
-			if(lock_channel_mode2 <=25)
-			{
-				/*
-				//SEGGER_RTT_printf(0, "lock_channel_mode2=%d\n",lock_channel_mode2);
-				switch(lock_channel_mode2)
-				{
-					case 1://power on
 
-						gpio_level= GI_1;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_1=1;	 						 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_1=0; 						 //输出高  on
-						}
-					
-						break;
-					case 2://
-						gpio_level= GI_2;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_2=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_2=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 3://
-						gpio_level= GI_3;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_3=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_3=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 4://
-						gpio_level= GI_4;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_4=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_4=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 5://
-						gpio_level= GI_5;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_5=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_5=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 6://
-						gpio_level= GI_6;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_6=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_6=0;	 						 //输出高  on
-						}							
-						break;	
-						
-					case 7://
-						gpio_level= GI_7;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_7=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_7=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 8://
-						gpio_level= GI_8;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_8=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_8=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 9://
-						gpio_level= GI_9;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_9=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_9=0;	 						 //输出高  on
-						}							
-						break;	
-						
-					case 10://
-						gpio_level= GI_10;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_10=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_10=0;	 						 //输出高  on
-						}							
-						break;			
-						
-					case 11://power on
-
-						gpio_level= GI_11;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_11=1;	 						 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_11=0; 						 //输出高  on
-						}
-					
-						break;
-					case 12://
-						gpio_level= GI_12;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_12=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_12=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 13://
-						gpio_level= GI_13;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_13=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_13=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 14://
-						gpio_level= GI_14;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_14=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_14=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 15://
-						gpio_level= GI_15;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_15=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_15=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 16://
-						gpio_level= GI_16;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_16=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_16=0;	 						 //输出高  on
-						}							
-						break;	
-						
-					case 17://
-						gpio_level= GI_17;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_17=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_17=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 18://
-						gpio_level= GI_18;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_18=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_18=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 19://
-						gpio_level= GI_19;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_19=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_19=0;	 						 //输出高  on
-						}							
-						break;	
-						
-					case 20://
-						gpio_level= GI_20;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_20=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_20=0;	 						 //输出高  on
-						}							
-						break;
-
-						
-					case 21://power on
-
-						gpio_level= GI_21;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_21=1;	 						 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_21=0; 						 //输出高  on
-						}
-					
-						break;
-					case 22://
-						gpio_level= GI_22;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_22=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_22=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 23://
-						gpio_level= GI_23;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_23=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_23=0;	 						 //输出高  on
-						}							
-						break;
-						
-					case 24://
-						gpio_level= GI_24;
-						SEGGER_RTT_printf(0, "gpio_level = %x\n",gpio_level);
-						if(0== gpio_level)
-						{
-							GO_24=1;							 //输出高 gong yang:off
-							delay_ms(30);  
-							GO_24=0;	 						 //输出高  on
-						}							
-						break;
-						
-					default:
-						break;
-
-				}
-				lock_all_off();
-				TIM4_Set(1);			//TIM 
-				*/
-			}
-			else
-			{
-				lock_channel_mode2=0;
-			}
-			lock_channel_mode2++;
-		}
-		
 		
 		if(1== key_mode)
 		{

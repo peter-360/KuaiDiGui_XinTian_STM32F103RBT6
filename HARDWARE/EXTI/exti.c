@@ -95,14 +95,12 @@ void EXTI9_5_IRQHandler(void)
 //		lock_jiance_flag=1;
 		//LED2_LOCK = !LED2_LOCK;
 		//LED1=!LED1;
-		delay_us(15);  //100
+//		delay_us(15);  //100
 		lock_jiance_flag=1;
+		LED2_CTL = 1;
 		lock_all_off();
 		
-		delay_us(20);  //100
-		LED2_CTL = 1;
-		delay_ms(100);  //100
-		LED2_CTL = 0;
+
 		SEGGER_RTT_printf(0, "----------d3------------\n");
 	}
 //	else

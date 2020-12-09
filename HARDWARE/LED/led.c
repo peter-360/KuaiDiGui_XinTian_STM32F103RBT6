@@ -746,9 +746,9 @@ void TIM4_IRQHandler(void)   //TIM4ÖÐ¶Ï
 				tx_Buffer[9]= bcc_temp;
 				memcpy(tx_Buffer+10,"end",3);//now is 2?
 				
-				tx_Buffer[12]='\0';//tx_Buffer[12]='\0';
+				tx_Buffer[13]='\0';//tx_Buffer[12]='\0';
 				
-				spear_uart_send_datas(tx_Buffer,12);
+				spear_uart_send_datas(tx_Buffer,13);
 			}
 
 			if(zijian_ongo_flag==1)

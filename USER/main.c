@@ -916,153 +916,154 @@ void data_parse()
 							SEGGER_RTT_printf(0, "error-2,m_data.opcode=%02x\n",m_data.opcode);
 						}
 						break;
-					case 0x80:
-						if(m_data.gu_ding  == 0x33)//process
-						{
-							if(0x00== m_data.lock_addr)//----4------
-							{
-								//grp_level_1= GI_1 | (GI_2<<1) | (GI_3<<2) | (GI_4<<3) | (GI_5<<4) | (GI_6<<5) | (GI_7<<6) | (GI_8<<7);
-								//grp_level_2= GI_9 | (GI_10<<1) | (GI_11<<2) | (GI_12<<3) | (GI_13<<4) | (GI_14<<5) | (GI_15<<6) | (GI_16<<7);
-								//grp_level_3= GI_17 | (GI_18<<1) | (GI_19<<2) | (GI_20<<3) | (GI_21<<4) | (GI_22<<5) | (GI_23<<6) | (GI_24<<7);
-								SEGGER_RTT_printf(0, "grp_level_1 = %x\n",grp_level_1);
-								SEGGER_RTT_printf(0, "grp_level_2 = %x\n",grp_level_2);
-								SEGGER_RTT_printf(0, "grp_level_3 = %x\n",grp_level_3);
+					// case 0x80:
+					// 	if(m_data.gu_ding  == 0x33)//process
+					// 	{
+					// 		if(0x00== m_data.lock_addr)//----4------
+					// 		{
+					// 			//grp_level_1= GI_1 | (GI_2<<1) | (GI_3<<2) | (GI_4<<3) | (GI_5<<4) | (GI_6<<5) | (GI_7<<6) | (GI_8<<7);
+					// 			//grp_level_2= GI_9 | (GI_10<<1) | (GI_11<<2) | (GI_12<<3) | (GI_13<<4) | (GI_14<<5) | (GI_15<<6) | (GI_16<<7);
+					// 			//grp_level_3= GI_17 | (GI_18<<1) | (GI_19<<2) | (GI_20<<3) | (GI_21<<4) | (GI_22<<5) | (GI_23<<6) | (GI_24<<7);
+					// 			SEGGER_RTT_printf(0, "grp_level_1 = %x\n",grp_level_1);
+					// 			SEGGER_RTT_printf(0, "grp_level_2 = %x\n",grp_level_2);
+					// 			SEGGER_RTT_printf(0, "grp_level_3 = %x\n",grp_level_3);
 								
-								memcpy(tx_Buffer,"star",4);
-								tx_Buffer[4]= m_data.opcode;
-								tx_Buffer[5]= m_data.board_addr;
-								tx_Buffer[6]= grp_level_1;
-								tx_Buffer[7]= grp_level_2;
-								tx_Buffer[8]= grp_level_3;
+					// 			memcpy(tx_Buffer,"star",4);
+					// 			tx_Buffer[4]= m_data.opcode;
+					// 			tx_Buffer[5]= m_data.board_addr;
+					// 			tx_Buffer[6]= grp_level_1;
+					// 			tx_Buffer[7]= grp_level_2;
+					// 			tx_Buffer[8]= grp_level_3;
 
 
 								
-								bcc_temp = ComputXor(tx_Buffer+4,5);
-								tx_Buffer[9]= bcc_temp;
-								memcpy(tx_Buffer+10,"end",3);//now is 2?
+					// 			bcc_temp = ComputXor(tx_Buffer+4,5);
+					// 			tx_Buffer[9]= bcc_temp;
+					// 			memcpy(tx_Buffer+10,"end",3);//now is 2?
 								
-								tx_Buffer[12]='\0';
+					// 			tx_Buffer[12]='\0';
 								
-								spear_uart_send_datas(tx_Buffer,12);
-								spear_rtt_send_datas(tx_Buffer,12);//to do 13?
+					// 			spear_uart_send_datas(tx_Buffer,12);
+					// 			spear_rtt_send_datas(tx_Buffer,12);//to do 13?
 
-								SEGGER_RTT_printf(0, "ok,m_data.opcode=%02x\n",m_data.opcode);
-								//spear_uart_send_datas
-							}
-							else//----3------
-							{
+					// 			SEGGER_RTT_printf(0, "ok,m_data.opcode=%02x\n",m_data.opcode);
+					// 			//spear_uart_send_datas
+					// 		}
+					// 		else//----3------
+					// 		{
 								
-								switch(m_data.lock_addr)
-								{
-									case 1:
-										//gpio_level=  GI_1;
-										break;
-									case 2:
-										//gpio_level=  GI_2;
-										break;
-									case 3:
-										//gpio_level=  GI_3;
-										break;
-									case 4:
-										//gpio_level=  GI_4;
-										break;
-									case 5:
-										//gpio_level=  GI_5;
-										break;
-									case 6:
-										//gpio_level=  GI_6;
-									case 7:
-										//gpio_level=  GI_7;
-										break;
-									case 8:
-										//gpio_level=  GI_8;
-										break;
-									case 9:
-										//gpio_level=  GI_9;
-										break;
-									case 10:
-										//gpio_level=  GI_10;
-										break;
-									case 11:
-										//gpio_level=  GI_11;
-										break;
-									case 12:
-										//gpio_level=  GI_12;
-										break;
-									case 13:
-										//gpio_level=  GI_13;
-										break;
-									case 14:
-										//gpio_level=  GI_14;
-										break;
-									case 15:
-										//gpio_level=  GI_15;
-									case 16:
-										//gpio_level=  GI_16;
-										break;
-									case 17:
-										//gpio_level=  GI_17;
-										break;
-									case 18:
-										//gpio_level=  GI_18;
-										break;
-									case 19:
-										//gpio_level=  GI_19;
-										break;
-									case 20:
-										//gpio_level=  GI_20;
-										break;
-									case 21:
-										//gpio_level=  GI_21;
-										break;
-									case 22:
-										//gpio_level=  GI_22;
-										break;
-									case 23:
-										//gpio_level=  GI_23;
-										break;
-									case 24:
-										//gpio_level=  GI_24;
-										break;
+					// 			switch(m_data.lock_addr)
+					// 			{
+					// 				case 1:
+					// 					//gpio_level=  GI_1;
+					// 					break;
+					// 				case 2:
+					// 					//gpio_level=  GI_2;
+					// 					break;
+					// 				case 3:
+					// 					//gpio_level=  GI_3;
+					// 					break;
+					// 				case 4:
+					// 					//gpio_level=  GI_4;
+					// 					break;
+					// 				case 5:
+					// 					//gpio_level=  GI_5;
+					// 					break;
+					// 				case 6:
+					// 					//gpio_level=  GI_6;
+					// 				case 7:
+					// 					//gpio_level=  GI_7;
+					// 					break;
+					// 				case 8:
+					// 					//gpio_level=  GI_8;
+					// 					break;
+					// 				case 9:
+					// 					//gpio_level=  GI_9;
+					// 					break;
+					// 				case 10:
+					// 					//gpio_level=  GI_10;
+					// 					break;
+					// 				case 11:
+					// 					//gpio_level=  GI_11;
+					// 					break;
+					// 				case 12:
+					// 					//gpio_level=  GI_12;
+					// 					break;
+					// 				case 13:
+					// 					//gpio_level=  GI_13;
+					// 					break;
+					// 				case 14:
+					// 					//gpio_level=  GI_14;
+					// 					break;
+					// 				case 15:
+					// 					//gpio_level=  GI_15;
+					// 				case 16:
+					// 					//gpio_level=  GI_16;
+					// 					break;
+					// 				case 17:
+					// 					//gpio_level=  GI_17;
+					// 					break;
+					// 				case 18:
+					// 					//gpio_level=  GI_18;
+					// 					break;
+					// 				case 19:
+					// 					//gpio_level=  GI_19;
+					// 					break;
+					// 				case 20:
+					// 					//gpio_level=  GI_20;
+					// 					break;
+					// 				case 21:
+					// 					//gpio_level=  GI_21;
+					// 					break;
+					// 				case 22:
+					// 					//gpio_level=  GI_22;
+					// 					break;
+					// 				case 23:
+					// 					//gpio_level=  GI_23;
+					// 					break;
+					// 				case 24:
+					// 					//gpio_level=  GI_24;
+					// 					break;
 									
-									default:
-										break;
+					// 				default:
+					// 					break;
 
-								}
-								SEGGER_RTT_printf(0, "--%d:gpio_level = %x\n",m_data.lock_addr,gpio_level);
+					// 			}
+					// 			SEGGER_RTT_printf(0, "--%d:gpio_level = %x\n",m_data.lock_addr,gpio_level);
 								
-								memcpy(tx_Buffer,"star",4);
-								tx_Buffer[4]= m_data.opcode;
-								tx_Buffer[5]= m_data.board_addr;
-								tx_Buffer[6]= m_data.lock_addr;
+					// 			memcpy(tx_Buffer,"star",4);
+					// 			tx_Buffer[4]= m_data.opcode;
+					// 			tx_Buffer[5]= m_data.board_addr;
+					// 			tx_Buffer[6]= m_data.lock_addr;
 								
-								if(0x01 == gpio_level)
-									tx_Buffer[7]= 0x11;//lock state todo open
-								else
-									tx_Buffer[7]= 0x00;//lock state todo close
+					// 			if(0x01 == gpio_level)
+					// 				tx_Buffer[7]= 0x11;//lock state todo open
+					// 			else
+					// 				tx_Buffer[7]= 0x00;//lock state todo close
 
 								
-								bcc_temp = ComputXor(tx_Buffer+4,4);
-								tx_Buffer[8]= bcc_temp;
-								memcpy(tx_Buffer+9,"end",3);
+					// 			bcc_temp = ComputXor(tx_Buffer+4,4);
+					// 			tx_Buffer[8]= bcc_temp;
+					// 			memcpy(tx_Buffer+9,"end",3);
 								
-								tx_Buffer[12]='\0';
+					// 			tx_Buffer[12]='\0';
 								
-								spear_uart_send_datas(tx_Buffer,12);
-								spear_rtt_send_datas(tx_Buffer,12);
+					// 			spear_uart_send_datas(tx_Buffer,12);
+					// 			spear_rtt_send_datas(tx_Buffer,12);
 
-								SEGGER_RTT_printf(0, "--ok,m_data.opcode=%02x\n",m_data.opcode);
-							}
+					// 			SEGGER_RTT_printf(0, "--ok,m_data.opcode=%02x\n",m_data.opcode);
+					// 		}
 							
-						}
-						else
-						{
-							SEGGER_RTT_printf(0, "error-2,m_data.opcode=%02x\n",m_data.opcode);
-						}
-						break;
+					// 	}
+					// 	else
+					// 	{
+					// 		SEGGER_RTT_printf(0, "error-2,m_data.opcode=%02x\n",m_data.opcode);
+					// 	}
+					// 	break;
 						
 
 					default:
+						SEGGER_RTT_printf(0, "---5---default------\n");
 						break;
 				}
 				
@@ -1169,8 +1170,52 @@ void data_parse()
 						break;
 					case 0x71://--------2.5---------
 						SEGGER_RTT_printf(0, "ok,m_data.opcode=%02x\n",m_data.opcode);
-						break;					
+						break;			
+
+
+					case 0xf1://--------2.6---------  software version  add
+						SEGGER_RTT_printf(0, "ok,m_data.opcode=%02x\n",m_data.opcode);
+						memcpy(tx_Buffer,"star",4);
+						tx_Buffer[4]= m_data.opcode;
+						tx_Buffer[5]= board_addr;
+
+						tx_Buffer[6]= 0x00;//major  V0.0.1
+						tx_Buffer[7]= 0x00;//minor
+						tx_Buffer[8]= 0x01;//rev
+
+
+						
+						bcc_temp = ComputXor(tx_Buffer+4,5);
+						tx_Buffer[9]= bcc_temp;
+						memcpy(tx_Buffer+10,"end",3);//now is 2?
+						
+						tx_Buffer[13]='\0';//tx_Buffer[12]='\0';
+						
+						spear_uart_send_datas(tx_Buffer,13);
+						break;		
+
+					case 0xf2://--------2.7--------- hardware version  add
+						SEGGER_RTT_printf(0, "ok,m_data.opcode=%02x\n",m_data.opcode);
+						memcpy(tx_Buffer,"star",4);
+						tx_Buffer[4]= m_data.opcode;
+						tx_Buffer[5]= board_addr;
+
+						tx_Buffer[6]= 0x04;//major  V4.0_B
+						tx_Buffer[7]= 0x00;//minor
+						tx_Buffer[8]= 0x0B;//REV
+
+
+						
+						bcc_temp = ComputXor(tx_Buffer+4,5);
+						tx_Buffer[9]= bcc_temp;
+						memcpy(tx_Buffer+10,"end",3);//now is 2?
+						
+						tx_Buffer[13]='\0';//tx_Buffer[12]='\0';
+						
+						spear_uart_send_datas(tx_Buffer,13);
+						break;
 					default:
+						SEGGER_RTT_printf(0, "---3---default------\n");
 						break;
 				}
 				
@@ -1330,7 +1375,7 @@ u8 key_mode =1;
 
 
 		tick_times++;
-		if(tick_times%100==0)
+		if(tick_times%75==0)//100
 		{
 			if(1== key_mode)
 			{

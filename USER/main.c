@@ -1194,25 +1194,25 @@ void data_parse()
 						spear_uart_send_datas(tx_Buffer,13);
 						break;		
 
-					case 0xf2://--------2.7--------- hardware version  add
+					case 0xf2://--------2.7--------- hardware version and dan/shuang xian type  add
 						SEGGER_RTT_printf(0, "ok,m_data.opcode=%02x\n",m_data.opcode);
 						memcpy(tx_Buffer,"star",4);
 						tx_Buffer[4]= m_data.opcode;
 						tx_Buffer[5]= board_addr;
 
-						tx_Buffer[6]= 0x04;//major  V4.0_B
+						tx_Buffer[6]= 0x04;//major  V4.0.B_1
 						tx_Buffer[7]= 0x00;//minor
 						tx_Buffer[8]= 0x0B;//REV
+						tx_Buffer[9]= 0x01;//dan:1/shuang:2 xian
 
-
 						
-						bcc_temp = ComputXor(tx_Buffer+4,5);
-						tx_Buffer[9]= bcc_temp;
-						memcpy(tx_Buffer+10,"end",3);//now is 2?
+						bcc_temp = ComputXor(tx_Buffer+4,6);
+						tx_Buffer[10]= bcc_temp;
+						memcpy(tx_Buffer+11,"end",3);//now is 2?
 						
-						tx_Buffer[13]='\0';//tx_Buffer[12]='\0';
+						tx_Buffer[14]='\0';//tx_Buffer[12]='\0';
 						
-						spear_uart_send_datas(tx_Buffer,13);
+						spear_uart_send_datas(tx_Buffer,14);
 						break;
 					default:
 						SEGGER_RTT_printf(0, "---3---default------\n");

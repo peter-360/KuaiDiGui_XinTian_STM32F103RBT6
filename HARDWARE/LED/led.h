@@ -2,6 +2,7 @@
 #define __LED_H	 
 #include "sys.h"
 #include "delay.h"
+#include <stdbool.h>
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK战舰STM32开发板
@@ -137,6 +138,6 @@ void TIM4_Set(u8 sta);
 void lock_all_off(void);
 
 extern u8 key_mode;
-
+extern bool mode_nomal;
 		 				    
 #endif

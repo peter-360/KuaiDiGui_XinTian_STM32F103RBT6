@@ -297,8 +297,10 @@ void TIM4_Int_Init(u16 arr,u16 psc)
 	TIM_ClearITPendingBit(TIM4, TIM_IT_Update  );	
 }
 
+#include <stdbool.h>
+bool zijian_ongo_flag=0;
 u8 lock_channel=0;
-u8 lock_channel_mode2=0;
+//u8 lock_channel_mode2=0;
 //定时器3中断服务程序
 void TIM4_IRQHandler(void)   //TIM4中断
 {
@@ -310,6 +312,16 @@ void TIM4_IRQHandler(void)   //TIM4中断
 		//LED1=!LED1;
 		//Uart1_Rx =0 ;
 		
+		if(zijian_ongo_flag==0) 
+		{
+			zijian_ongo_flag =1;			
+		}
+		else if(zijian_ongo_flag==1) 
+		{
+			zijian_ongo_flag =0;			
+		}
+		SEGGER_RTT_printf(0, "zijian_ongo_flag= %d\n",zijian_ongo_flag);
+
 		if(2== key_mode)
 		{
 			SEGGER_RTT_printf(0, "mode3-lock_channel= %d\n",lock_channel);
@@ -319,226 +331,379 @@ void TIM4_IRQHandler(void)   //TIM4中断
 				{
 					SEGGER_RTT_printf(0, "lock_channel=%d\n",lock_channel);
 					case 1://power on
-						LED2_CTL = 0;
-						GO_1=1; 					//open
-						
-						delay_ms(800);
-						LED2_CTL = 1;  
-						GO_1=0;						//close
-						
-						
-					
+						if(0==zijian_ongo_flag)
+						{
+							TIM4_Int_Init(7999,7199);//	
+							TIM4_Set(1);	
+							SEGGER_RTT_printf(0, "----------1-1----------\n");
+							LED2_CTL = 0;
+							GO_1=1; 					//open		
+		
+						}
+						else
+						{
+							TIM4_Int_Init(1999,7199);//
+							TIM4_Set(1);
+							SEGGER_RTT_printf(0, "----------1-2----------\n");
+							LED2_CTL = 1;  
+							GO_1=0;						//close
+
+						}
+
 						break;
+
 					case 2://
-						LED2_CTL = 0;
-						GO_2=1;							 //open
-						delay_ms(800);
-						LED2_CTL = 1; 
-						GO_2=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							SEGGER_RTT_printf(0, "----------2-1----------\n");
+							LED2_CTL = 0;
+							GO_2=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+							TIM4_Set(1);
+						}
+						else
+						{
+							SEGGER_RTT_printf(0, "----------2-2----------\n");
+							LED2_CTL = 1; 
+							GO_2=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+							TIM4_Set(1);
+						}
 					
 						break;
 			
 		
 					case 3:
-					LED2_CTL = 0;
-						GO_3=1;							 //open
-						delay_ms(800);
-						LED2_CTL = 1; 
-						GO_3=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_3=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{
+							LED2_CTL = 1; 
+							GO_3=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 4:
-					LED2_CTL = 0;
-						GO_4=1;							 //open
-						delay_ms(800);
-						LED2_CTL = 1; 
-						GO_4=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_4=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{
+							LED2_CTL = 1; 
+							GO_4=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 
 						break;
 					case 5:
-					LED2_CTL = 0;
-						GO_5=1;							 //open
-						delay_ms(800);
-						LED2_CTL = 1; 
-						GO_5=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_5=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{
+							LED2_CTL = 1; 
+							GO_5=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 6:
-					LED2_CTL = 0;
-						GO_6=1;							 //open
-						delay_ms(800);
-						LED2_CTL = 1; 
-						GO_6=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_6=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{
+							LED2_CTL = 1; 
+							GO_6=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 7:
-					LED2_CTL = 0;
-						GO_7=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_7=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_7=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_7=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 
 						break;
 					case 8:
-						LED2_CTL = 0;
-						GO_8=1;						 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_8=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_8=1;						 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_8=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 9:
-						LED2_CTL = 0;
-						GO_9=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_9=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_9=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_9=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 10:
-						LED2_CTL = 0;
-						GO_10=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_10=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_10=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_10=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 
 						break;
 					case 11:
-						LED2_CTL = 0;
-						GO_11=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1; 
-						GO_11=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_11=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1; 
+							GO_11=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 12:
-						LED2_CTL = 0;
-						GO_12=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;  
-						GO_12=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_12=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;  
+							GO_12=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 					
 						break;
 					case 13:
-						LED2_CTL = 0;
-						GO_13=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1; 
-						GO_13=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_13=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1; 
+							GO_13=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 14:
-						LED2_CTL = 0;
-						GO_14=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_14=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_14=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_14=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 15:
-						LED2_CTL = 0;
-						GO_15=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_15=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_15=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_15=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 16:
-						LED2_CTL = 0;
-						GO_16=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_16=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_16=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_16=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 17:
-						LED2_CTL = 0;
-						GO_17=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_17=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_17=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_17=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 18:
-						LED2_CTL = 0;
-						GO_18=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_18=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_18=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_18=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 19:
-						LED2_CTL = 0;
-						GO_19=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_19=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_19=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_19=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 					
 						break;
 					case 20:
-						LED2_CTL = 0;
-						GO_20=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1; 
-						GO_20=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_20=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1; 
+							GO_20=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 21:
-						LED2_CTL = 0;
-						GO_21=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_21=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_21=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_21=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 22:
-						LED2_CTL = 0;
-						GO_22=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_22=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_22=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_22=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 23:
-						LED2_CTL = 0;
-						GO_23=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1; 
-						GO_23=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_23=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1; 
+							GO_23=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					case 24:
-						LED2_CTL = 0;
-						GO_24=1;							 //open
-						delay_ms(800); 
-						LED2_CTL = 1;
-						GO_24=0;	 						 //close
-						
+						if(0==zijian_ongo_flag)
+						{
+							LED2_CTL = 0;
+							GO_24=1;							 //open
+							TIM4_Int_Init(7999,7199);//
+						}
+						else
+						{ 
+							LED2_CTL = 1;
+							GO_24=0;	 						 //close
+							TIM4_Int_Init(1999,7199);//
+						}
 
 						break;
 					
@@ -547,7 +712,7 @@ void TIM4_IRQHandler(void)   //TIM4中断
 						break;
 				}
 				//LED2_CTL = 0;
-				lock_all_off();
+				// lock_all_off();
 				TIM4_Set(1);			//TIM 
 			}
 			else
@@ -555,8 +720,15 @@ void TIM4_IRQHandler(void)   //TIM4中断
 				TIM4_Set(0);			//TIM 
 				lock_channel=0;
 				key_mode = 1;
+
+				mode_nomal =0;
 			}
-			lock_channel++;
+
+			if(zijian_ongo_flag==1)
+			{
+				lock_channel++;				
+			}
+
 		}
 		
 		
@@ -565,7 +737,7 @@ void TIM4_IRQHandler(void)   //TIM4中断
 		if(1== key_mode)
 		{
 			lock_channel =0;
-			lock_channel_mode2 =0;
+//			lock_channel_mode2 =0;
 			TIM4_Set(0);
 		}
 		

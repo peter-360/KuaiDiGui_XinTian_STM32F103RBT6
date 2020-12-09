@@ -3053,7 +3053,7 @@ u8 key_mode =1;
 				key2ShortPressCount++;
 				if(0== mode_nomal)//mode2
 				{
-					TIM4_Int_Init(9999,7199);//2999  10Khz的计数频率，计数到3000为300ms  
+					TIM4_Int_Init(999,7199);//2999  10Khz的计数频率，计数到3000为300ms  
 					TIM4_Set(1);
 					key_mode = 2;
 					mode_nomal =1;
@@ -3067,6 +3067,7 @@ u8 key_mode =1;
 				//					TIM4_Set(1);
 					key_mode = 1;
 					mode_nomal =0;
+					lock_all_off();
 					SEGGER_RTT_printf(0, "2mode_nomal = %d\n",mode_nomal); 
 				}
 				SEGGER_RTT_printf(0, "key2ShortPressCount = %d\n",key2ShortPressCount); 

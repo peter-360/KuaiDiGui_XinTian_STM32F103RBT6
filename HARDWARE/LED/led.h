@@ -29,9 +29,10 @@ static void RS485_delay(__IO u32 nCount)
 
 
 #define LED1 PAout(15)	// PD2	green
-#define LED2_LOCK PBout(5)	// 	out
-#define LED2_CTL PAout(12)	// 	out 100ms   ?
 
+#define LED2_LOCK PBout(5)	// 	red out
+#define LED2_CTL PAout(12)	// 	out 100ms   ?
+//PAout(8) input exti.c
 
 #define GO_1 PAout(0)	//
 #define GO_2 PAout(1)	//
@@ -139,5 +140,22 @@ void lock_all_off(void);
 
 extern u8 key_mode;
 extern bool mode_nomal;
+extern u8 lock_channel;
+
+
+///command struct
+typedef struct
+{
+	//uint8_t type;
+	uint8_t opcode;
+	
+	uint8_t board_addr;
+	uint8_t lock_addr;//-------
+	uint8_t gu_ding;//---
+	
+	uint8_t bcc;
+}command1_struct;
+
+// extern command1_struct m_data;
 		 				    
 #endif

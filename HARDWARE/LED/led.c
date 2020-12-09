@@ -305,6 +305,9 @@ u8 lock_channel=0;
 void TIM4_IRQHandler(void)   //TIM4中断
 {
 	uint8_t gpio_level;
+	uint8_t tx_Buffer[64]={0};        //?????
+	uint8_t bcc_temp;
+	uint8_t board_addr;
 	SEGGER_RTT_printf(0, "TIM4_IRQHandler\n"); 
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  //检查TIM4更新中断发生与否
 	{
@@ -324,9 +327,10 @@ void TIM4_IRQHandler(void)   //TIM4中断
 
 		if(2== key_mode)
 		{
-			SEGGER_RTT_printf(0, "mode3-lock_channel= %d\n",lock_channel);
-			if(lock_channel <=25)
+			SEGGER_RTT_printf(0, "mode2-lock_channel= %d\n",lock_channel);
+			if(lock_channel <=24)//<=25
 			{
+				SEGGER_RTT_printf(0, "------lock_channel<=24------\n");
 				switch(lock_channel)
 				{
 					SEGGER_RTT_printf(0, "lock_channel=%d\n",lock_channel);
@@ -717,11 +721,34 @@ void TIM4_IRQHandler(void)   //TIM4中断
 			}
 			else
 			{
+				SEGGER_RTT_printf(0, "------lock_channel>24------\n");
 				TIM4_Set(0);			//TIM 
-				lock_channel=0;
 				key_mode = 1;
-
 				mode_nomal =0;
+
+				lock_channel=0;
+				zijian_ongo_flag =1;//add
+
+				lock_all_off();
+
+				board_addr= DSW_1 | (DSW_2<<1) | (DSW_3<<2) | (DSW_4<<3) | (DSW_5<<4) | (DSW_6<<5) ;
+				SEGGER_RTT_printf(0, "-board_addr = %02x\n",board_addr);
+				memcpy(tx_Buffer,"star",4);
+				tx_Buffer[4]= 0x80;//m_data.opcode;
+				tx_Buffer[5]= board_addr;
+				tx_Buffer[6]= 0;
+				tx_Buffer[7]= 0;
+				tx_Buffer[8]= 0;
+
+
+				
+				bcc_temp = ComputXor(tx_Buffer+4,5);
+				tx_Buffer[9]= bcc_temp;
+				memcpy(tx_Buffer+10,"end",3);//now is 2?
+				
+				tx_Buffer[12]='\0';//tx_Buffer[12]='\0';
+				
+				spear_uart_send_datas(tx_Buffer,12);
 			}
 
 			if(zijian_ongo_flag==1)

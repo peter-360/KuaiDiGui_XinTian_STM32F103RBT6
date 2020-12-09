@@ -97,7 +97,7 @@ void EXTI9_5_IRQHandler(void)
 		//LED1=!LED1;
 //		delay_us(15);  //100
 		lock_jiance_flag=1;
-		LED2_CTL = 1;
+		
 		lock_all_off();
 		
 

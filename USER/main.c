@@ -1383,7 +1383,7 @@ u8 key_mode =1;
 				LED1=!LED1;
 			}
 		}
-		if(tick_times%10==0)//2
+		if(tick_times%20==0)//2
 		{
 			if(2== key_mode)
 			{
@@ -1391,17 +1391,17 @@ u8 key_mode =1;
 				LED1=!LED1;
 			}
 		}
-		if(tick_times%10==0)//3
-		{
-			if(3== key_mode)
-			{
-				SEGGER_RTT_printf(0, "---test3---\n"); 
-				LED1=!LED1;
-			}
-		}
+		// if(tick_times%10==0)//3
+		// {
+		// 	if(3== key_mode)
+		// 	{
+		// 		SEGGER_RTT_printf(0, "---test3---\n"); 
+		// 		LED1=!LED1;
+		// 	}
+		// }
 		
 		
-		if(tick_times%10==0)//3
+		if(tick_times%20==0)//3
 		{
 			if(1== lock_jiance_flag)
 			{

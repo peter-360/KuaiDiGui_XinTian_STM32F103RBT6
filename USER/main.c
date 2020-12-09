@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include "timer.h"
+#include "iwdg.h"
 
 //ALIENTEK Mini STM32开发板范例代码3
 //串口实验   
@@ -1270,6 +1271,7 @@ u8 key_mode =1;
 	u8 len=3;	
 	KEY_Status status;
 	u32 tick_times=0; 
+	u16 timex_t3=0; 
  
 	delay_init();	    	 //延时函数初始化	
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);// 设置中断优先级分组2
@@ -1292,7 +1294,7 @@ u8 key_mode =1;
 	//TIM3 uart
 	TIM3_Int_Init(99,7199);//10Khz的计数频率，计数到100为10ms  
 	TIM3_Set(0);			//关闭定时器3
-	 
+	IWDG_Init(7,4094);
 //	RS485_RX_EN();
 //	//printf("1-len=%d\r\n",len);
 //	delay_ms(1300);
@@ -1375,6 +1377,15 @@ u8 key_mode =1;
 
 
 		tick_times++;
+		timex_t3++;
+		
+
+		if(timex_t3==75)//0.75s 75
+		{
+			timex_t3=0;
+			IWDG_Feed();//24s must go here
+			SEGGER_RTT_printf(0, "------------feed dog ongo-----------\n");	
+		}
 		if(tick_times%75==0)//100
 		{
 			if(1== key_mode)

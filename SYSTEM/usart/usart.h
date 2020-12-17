@@ -3,6 +3,7 @@
 #include "stdio.h"	
 #include "sys.h" 
 #include "SEGGER_RTT.h"
+#include "stdbool.h"
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32开发板
@@ -73,6 +74,26 @@ void Usart_SendString( USART_TypeDef * pUSARTx, char *str);
 void Usart_SendHalfWord( USART_TypeDef * pUSARTx, uint16_t ch);
 void Usart_SendArray( USART_TypeDef * pUSARTx, uint8_t *array, uint16_t num);
 
+
+ void USART1_Init(u32 BaudRate);
+
+
+
+#define RING_BUFF_SIZE 320
+typedef struct ringBuff{
+    unsigned int in;               //?????
+    unsigned int out;              //?????
+    unsigned char buffer[RING_BUFF_SIZE];     //???
+}stRingBuff;
+
+extern u8 g_recvFinshFlag;
+
+stRingBuff *GetRingBufferStruct(void);
+u8 *IsUsart1RecvFinsh(void);
+int GetRingBufferLength(stRingBuff *ringBuf);
+bool IsRingBufferFull(stRingBuff *ringBuf);
+void WriteRingBuffer(stRingBuff *ringBuf,char *writeBuf,unsigned int len);
+void ReadRingBuffer(stRingBuff *ringBuf,char *readBuf,unsigned int len);
 
 #endif
 

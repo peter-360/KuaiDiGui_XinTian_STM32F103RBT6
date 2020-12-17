@@ -14,6 +14,8 @@
 //All rights reserved									  
 //////////////////////////////////////////////////////////////////////////////////   	 
 
+
+#if 0
 //设置TIM4的开关
 //sta:0，关闭;1,开启;
 void TIM3_Set(u8 sta)
@@ -69,12 +71,14 @@ void TIM3_IRQHandler(void)   //TIM3中断
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx更新中断标志 
 //		LED1=!LED1;
-		SEGGER_RTT_printf(0, "TIM3_IRQHandler Uart1_Rx= %x\n",Uart1_Rx);
-		Uart1_Rx =0 ;
+		// SEGGER_RTT_printf(0, "TIM3_IRQHandler Uart1_Rx= %x\n",Uart1_Rx);
+		// Uart1_Rx =0 ;
 		TIM3_Set(0);			//关闭TIM 
 	}
 }
 
+
+#endif
 
 
 

@@ -86,40 +86,9 @@ void UartSendString(char* Str)
 
 
 
-
-void Process_InputData(uint8_t* data_buffer, uint16_t Nb_bytes)
-{
-
-//	printf("*********Process_InputData*************\r\n");
-//	usart1Printf("data_buffer=%x %d",data_buffer[0],Nb_bytes);
-	//USART1_Puts("----\r\n");
-	//SEGGER_RTT_printf(0,"----\r\n");
-	//spear_uart_send_datas((uint8_t*)"123\r\n",5);
-//	usart1Printf("-------\r\n");
-	//USART1_Puts("-----\r\n");
-
-
-	USART_SendData(USART1, *data_buffer);
-	
-
-	
-	//if(spear_uart_process_data(*data_buffer))//packege start
-	{
-		////send event to 
-		//spear_sched_set_evt(NULL, 0,user_cmd_process_event_handle);
-	 
-	 //os_timer_create(&TimersUartRcv, "TimersUartRcv", 1, 10, false, user_cmd_process_event_handle);//10ms
-	 //os_timer_start(&TimersUartRcv);
-	 
-
-	 //user_cmd_process_event_handle(pxTimer);
-	 //user_cmd_process_event_handle(& rx_char, 1);
-	}
-
-}
 void HCHO_Test(uint8_t recv_data)
 {
-	printf("recv_data=%x\r\n",recv_data);
+	SEGGER_RTT_printf(0,"recv_data=%x\r\n",recv_data);
 }
 
 
@@ -569,7 +538,7 @@ void lock_all_off(void)
 
 // }
 
-void data_parse()
+u8 data_parse(u8* Uart1_Buffer0, u8 Uart1_Rx0)
 {
 	uint8_t bcc_temp;
 	uint8_t tx_Buffer[256]={0};        //?????
@@ -583,11 +552,23 @@ void data_parse()
 	uint8_t Uart1_Buffer_T[256]={0};        //?????
 	uint8_t Uart1_Rx_T = 0;             //??
 	
-	SEGGER_RTT_printf(0, "-parse-Uart1_Rx = %d\n",Uart1_Rx);      //RTT打印
-	Uart1_Rx_T = Uart1_Rx - 8;
-	SEGGER_RTT_printf(0, "-Uart1_Rx_T = %d\n",Uart1_Rx_T);      //RTT打?
-	memcpy(Uart1_Buffer_T,Uart1_Buffer+4,Uart1_Rx_T);
+	// SEGGER_RTT_printf(0, "-parse-Uart1_Rx = %d\n",Uart1_Rx);      //RTT打印
+	// Uart1_Rx_T = Uart1_Rx - 8;
+	// SEGGER_RTT_printf(0, "-Uart1_Rx_T = %d\n",Uart1_Rx_T);      //RTT打?
+	// memcpy(Uart1_Buffer_T,Uart1_Buffer+4,Uart1_Rx_T);
 	
+	u8 ret_v=0;
+	
+	
+			Usart_SendArray(USART1,(uint8_t *)Uart1_Buffer0, Uart1_Rx0);	
+	
+	SEGGER_RTT_printf(0,"-parse-Uart1_Rx0 = %d\n",Uart1_Rx0);      //RTT??
+	Uart1_Rx_T = Uart1_Rx0 - 8;
+	SEGGER_RTT_printf(0,"-Uart1_Rx_T = %d\n",Uart1_Rx_T);      //RTT??
+	memcpy(Uart1_Buffer_T,Uart1_Buffer0+4,Uart1_Rx_T);
+
+
+
 
 	board_addr= DSW_1 | (DSW_2<<1) | (DSW_3<<2) | (DSW_4<<3) | (DSW_5<<4) | (DSW_6<<5) ;//| (DSW_7<<6) | (DSW_8<<7);
 	SEGGER_RTT_printf(0, "-board_addr = %02x\n",board_addr);
@@ -1230,6 +1211,9 @@ void data_parse()
 		}
 	}
 
+
+	return ret_v;
+
 }
 
 
@@ -1263,7 +1247,23 @@ static void key1PressCallback(KEY_Status status)
 
 
 
+static const char* my_memmem(const char* haystack, size_t hlen, const char* needle, size_t nlen)
+{
+	const char* cur;
+	const char* last;
+	//assert(haystack);
+	//assert(needle);
+	//assert(nlen > 1);
+	last =  haystack + hlen - nlen;
+	for (cur = haystack; cur <= last; ++cur) {
+		if (cur[0] == needle[0] && memcmp(cur, needle, nlen) == 0) {
+			return cur;
+		}
+	}
+	return NULL;
+}
 
+u8 uart_jiexi_over_flag;
 u8 key_mode =1;
  int main(void)
  {	
@@ -1272,11 +1272,19 @@ u8 key_mode =1;
 	KEY_Status status;
 	u32 tick_times=0; 
 	u16 timex_t3=0; 
- 
+	u8 readBuffer[RING_BUFF_SIZE];
+	int read_len=0;
+	int buff_index=0;
+
+	u8 *retvalue_star=NULL;
+	u8 *retvalue_endo=NULL;
+	 
+	 
 	delay_init();	    	 //延时函数初始化	
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);// 设置中断优先级分组2
 	//uart_init(9600,HCHO_Test);	 //串口初始化为9600
-	SdkEvalComIOConfig(Process_InputData);
+	// SdkEvalComIOConfig(Process_InputData);
+	USART1_Init(9600);
 	 
 	//lock duanlu jiance io
 	KEY_Init();
@@ -1291,14 +1299,16 @@ u8 key_mode =1;
 	//TIM2 key
 	KEY_Init1(KEY_Pin2);
 	KEY_SetPressCallback(KEY_Pin2, key1PressCallback);
-	//TIM3 uart
-	TIM3_Int_Init(99,7199);//10Khz的计数频率，计数到100为10ms  
-	TIM3_Set(0);			//关闭定时器3
+	// //TIM3 uart
+	// TIM3_Int_Init(99,7199);//10Khz的计数频率，计数到100为10ms  
+	// TIM3_Set(0);			//关闭定时器3
+
+
 	IWDG_Init(7,4094);
 //	RS485_RX_EN();
-//	//printf("1-len=%d\r\n",len);
+//	//SEGGER_RTT_printf(0,"1-len=%d\r\n",len);
 //	delay_ms(1300);
-//	printf("--------------\r\n");
+//	SEGGER_RTT_printf(0,"--------------\r\n");
 	SEGGER_RTT_printf(0,"*****************************************************************\n");
 	
 //	RS485_TX_EN();
@@ -1308,24 +1318,62 @@ u8 key_mode =1;
 
 	while(1)
 	{
-		if((1== packerflag))
+		if((*IsUsart1RecvFinsh())&&(uart_jiexi_over_flag ==0))
 		{
-			// RS485_TX_EN();
-			SEGGER_RTT_printf(0, "\n");
-			SEGGER_RTT_printf(0, "-main-Uart1_Rx = %d\n",Uart1_Rx);      //RTT打印
-			SEGGER_RTT_printf(0, "---rcv-datas---"); 
-			spear_rtt_send_datas(Uart1_Buffer,Uart1_Rx);
+			uart_jiexi_over_flag =1;
+			read_len = GetRingBufferLength(GetRingBufferStruct());
+			ReadRingBuffer(GetRingBufferStruct(),readBuffer,read_len);
 			
-			//spear_uart_send_datas(Uart1_Buffer,Uart1_Rx); //debug
-
-
-			data_parse();
-			// RS485_RX_EN();
+			//Usart_SendArray(USART1,(uint8_t *)readBuffer,read_len);
+			spear_rtt_send_datas((uint8_t *)readBuffer,read_len);//-----------RTT
+			//SEGGER_RTT_printf(0,"%s",readBuffer);
+			SEGGER_RTT_printf(0,"\nread_len=%d\n",read_len);
 			
-			memset(Uart1_Buffer,0,13);//max =4+5+4 =13
-			Uart1_Rx   = 0 ;
-			packerflag = 0;
-			//Uart1_index_flag_end =0;
+			*IsUsart1RecvFinsh() = 0;			
+			
+			
+//xunhuan:
+			while(1)
+			{
+				SEGGER_RTT_printf(0,"-1-buff_index=%d\n\n\n",(int)buff_index);
+				retvalue_star=(u8*)my_memmem((char*)readBuffer+buff_index,read_len,"star",4);
+				if(NULL ==retvalue_star)
+				{
+					SEGGER_RTT_printf(0,"--------a1--------\r\n");
+					break;
+				}
+				retvalue_endo=(u8*)my_memmem((char*)readBuffer+buff_index,read_len,"endo",4);
+				if(NULL ==retvalue_endo)
+				{
+					SEGGER_RTT_printf(0,"--------a2--------\r\n");
+					break;
+				}
+				
+				if((retvalue_endo>retvalue_star)&&((retvalue_endo-retvalue_star)<=13))
+				{  
+					//Usart_SendArray(USART1,(uint8_t *)retvalue_star, retvalue_endo+strlen("endo") - retvalue_star);				
+					data_parse(retvalue_star, retvalue_endo+strlen("endo") - retvalue_star);//0==     ---------
+				}
+
+				SEGGER_RTT_printf(0,"readBuffer+read_len=%d\n",(int)(readBuffer+read_len));
+				SEGGER_RTT_printf(0,"retvalue_endo+strlen endo=%d\n",(int)(retvalue_endo+strlen("endo")));
+				if((readBuffer+read_len)>( retvalue_endo+strlen("endo") ) )
+				{
+					buff_index = buff_index+ (int)(retvalue_endo+strlen("endo")  -  retvalue_star);
+					SEGGER_RTT_printf(0,"-2-buff_index=%d\n\n\n",(int)buff_index);
+					continue;
+				}
+				else
+				{
+					SEGGER_RTT_printf(0,"--------a3--------\r\n");
+					break;
+				}
+
+			}
+			
+			buff_index = 0;
+			memset(readBuffer,0,RING_BUFF_SIZE);				
+			uart_jiexi_over_flag =0;
 		}
 			
 		status = KEY_GetStatus(KEY_Pin2);
@@ -1486,23 +1534,23 @@ u8 key_mode =1;
 //		if(USART_RX_STA&0x8000)
 //		{					   
 //			len=USART_RX_STA&0x3fff;//得到此次接收到的数据长度
-//			printf("\r\n您发送的消息为:\r\n");
+//			SEGGER_RTT_printf(0,"\r\n您发送的消息为:\r\n");
 //			for(t=0;t<len;t++)
 //			{
 //				USART1->DR=USART_RX_BUF[t];
 //				while((USART1->SR&0X40)==0);//等待发送结束
 //			}
-//			printf("\r\n\r\n");//插入换行
+//			SEGGER_RTT_printf(0,"\r\n\r\n");//插入换行
 //			USART_RX_STA=0;
 //		}else
 //		{
 //			times++;
 //			if(times%5000==0)
 //			{
-//				printf("\r\nALIENTEK MiniSTM32开发板 串口实验\r\n");
-//				printf("正点原子@ALIENTEK\r\n\r\n\r\n");
+//				SEGGER_RTT_printf(0,"\r\nALIENTEK MiniSTM32开发板 串口实验\r\n");
+//				SEGGER_RTT_printf(0,"正点原子@ALIENTEK\r\n\r\n\r\n");
 //			}
-//			if(times%200==0)printf("请输入数据,以回车键结束\r\n");  
+//			if(times%200==0)SEGGER_RTT_printf(0,"请输入数据,以回车键结束\r\n");  
 //			if(times%30==0)LED0=!LED0;//闪烁LED,提示系统正在运行.
 //			delay_ms(10);   
 //		}

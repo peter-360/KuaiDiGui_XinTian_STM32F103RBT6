@@ -139,7 +139,7 @@ int fgetc(FILE *f)
 
  
  
-#if EN_USART1_RX   //如果使能了接收
+#if 0//EN_USART1_RX   //如果使能了接收
 //串口1中断服务程序
 //注意,读取USARTx->SR能避免莫名其妙的错误   	
 u8 USART_RX_BUF[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
@@ -370,7 +370,7 @@ void USART1_IRQHandler(void)
 		}
 		Uart1_Rx++;
 		
-		//printf("ch=%x\r\n",ch);
+		//SEGGER_RTT_printf(0,"ch=%x\r\n",ch);
 		/* IO Receive Data: it handles the received data within the  User Application Function 
 		defined as parameter of SdkEvalComIOConfig() */
 		//SdkEvalComIOReceiveData(&ch,1);
@@ -386,61 +386,364 @@ void USART1_IRQHandler(void)
 
 
 
-//		switch(Uart1_index_flag)
-//		{
-//			case 0:
-//				if(ch == 'e')//process
-//				{
-//					Uart1_index_flag =1;
-//					index_flag1 =1;
-//				}
-//				break;
-//			case 1:
-//				if(ch == 'n')//process
-//					Uart1_index_flag =2;
-//				break;
-//			case 2:
-//				if(ch == 'd')//process
-//					Uart1_index_flag =3;
-//				break;
-//			case 3:
-//				if(ch == 'o')//process
-//				{
-//					Uart1_index_flag =4;
-//					index_flag4 =1;
-//				}
-//				break;
-//			default:
-//				break;
-//				
-//		}
-//		
-//			
-//		if(1== index_flag4)
-//		{
-//			if(1== index_flag1)
-//			{
-//				SEGGER_RTT_printf(0,"Uart1_index_flag=%d\r\n",Uart1_index_flag);
-//				SEGGER_RTT_printf(0,"Uart1_Rx=%d\r\n",Uart1_Rx);
-//				index_flag1 =0;
-//				index_flag4 =0;
-//				Uart1_index_flag =0;
-//				Uart1_Rx =0;
-//			}
-//		}
-//		else
-//		{
-//			if(0== index_flag1)
-//			{
-//					//Uart1_Buffer[Uart1_Rx] = ch; 
-//					Uart1_Rx++; 
-//					//Uart1_Rx &= 0xFF; 
-
-//			}
-//			else
-//			{
-//					//SEGGER_RTT_printf(0,"Uart1_Rx=%d\r\n",Uart1_Rx);
-//			}
-//		}
 
 
+ u8 USART1_REC_buf[320] = {0}; 
+
+//u16 USART1_REC_counter = 0;
+ 
+
+//USART_REC_Queue* USART1_REC_Queue_head = NULL;
+
+//USART_REC_Queue* USART1_REC_Queue_tail = NULL;
+ 
+ 
+void USART1_Init(u32 BaudRate)
+{
+
+    //???????????á????
+
+    GPIO_InitTypeDef   GPIO_InitStruct;       //IO
+
+    USART_InitTypeDef  USART_InitStruct;      //????
+
+    NVIC_InitTypeDef   NVIC_InitStruct;       //????????
+
+    DMA_InitTypeDef    DMA_InitStruct;        //DMA
+
+   
+
+    /*??????????????*/
+
+    //USART1_REC_Queue_head = USART_REC_Queue_Creat();  //???¨????3?????????·????
+
+    //USART1_REC_Queue_tail = USART1_REC_Queue_head;    //???¨????3??????????????
+
+   
+
+    //RCC????
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);     //IO?±??
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);    //????3?±??
+
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);        //DMA?±??
+
+   
+
+    //PB11 USART1_TXD
+
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;//???????ì????
+
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+
+    GPIO_Init(GPIOA, &GPIO_InitStruct);  
+
+    //PB10 USART1_RXD
+
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;//????????
+
+    //GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+   
+
+    //?????ò???????????÷??????
+
+    NVIC_InitStruct.NVIC_IRQChannel = USART1_IRQn;
+
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0;//??????????1
+
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 2;//×???????1
+
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;//????IRQ?¨??
+
+    NVIC_Init(&NVIC_InitStruct);
+
+   
+
+    //USART??????
+
+    USART_InitStruct.USART_BaudRate = BaudRate;//?¨???? ??°?9600
+
+    USART_InitStruct.USART_WordLength = USART_WordLength_8b;//×???????????8??
+
+    USART_InitStruct.USART_StopBits = USART_StopBits_1;//??????????
+
+    USART_InitStruct.USART_Parity = USART_Parity_No;//??????×??????é
+
+    USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//???????÷????
+
+    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;//??·?????
+
+    USART_Init(USART1, &USART_InitStruct);//??????USART
+
+    //USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);//????????????
+
+    USART_ITConfig(USART1, USART_IT_IDLE, ENABLE);//????×???????????
+
+    USART_Cmd(USART1, ENABLE);//???????? 
+
+ 
+
+    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)(&USART1->DR); //???????????????÷
+
+    DMA_InitStruct.DMA_MemoryBaseAddr = (u32)(&USART1_REC_buf);      //????????????????·????·-----------
+
+    DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralSRC;                  //???¨???è???????·
+
+    DMA_InitStruct.DMA_BufferSize = RING_BUFF_SIZE;                  //??????·????ó??USART1_REC_len
+
+    DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;    //???è?????÷???·??·?????
+
+    DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;             //??????·????·??·?????
+
+    DMA_InitStruct.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte; //???è?????í??8??
+
+    DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;     //?¨???????÷?????í??8??
+
+    DMA_InitStruct.DMA_Mode = DMA_Mode_Normal;                       //??????×÷????
+
+    DMA_InitStruct.DMA_Priority = DMA_Priority_High;                 //?¨????????
+
+    DMA_InitStruct.DMA_M2M = DMA_M2M_Disable;                        //??·??????????÷???????÷????
+
+    DMA_Init(DMA1_Channel5, &DMA_InitStruct);                        //?????è????DMA1?¨??  
+
+    DMA_Cmd(DMA1_Channel5, ENABLE);                                  //????DMA1?¨?? 
+
+    USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);                   //×????????ü????????????DMA????
+
+}
+
+
+
+
+
+
+#define FALSE  0
+#define TRUE  1
+
+/**
+ - @brief:         ?????????
+ - @param[in]:     None
+ - @retval[out]:   None
+ - @note:            
+ - @author:       AresXu
+ - @version:      v1.0.0
+*/
+bool IsRingBufferFull(stRingBuff *ringBuf)
+{
+	 if (ringBuf == NULL)
+    {
+        SEGGER_RTT_printf(0,"pointer is null\r\n");
+        return 0;
+    }
+    
+    if(((ringBuf->in+1) % RING_BUFF_SIZE) == ringBuf->out)
+    {
+//		SEGGER_RTT_printf(0,"Ring buffer is Full\r\n");
+        return TRUE;
+    }
+    return FALSE;
+}
+/**
+ - @brief:        ?????????
+ - @param[in]:     None
+ - @retval[out]:   None
+ - @author:       AresXu
+ - @version:      v1.0.0
+*/
+bool IsRingBufferEmpty(stRingBuff *ringBuf)
+{ 
+	if (ringBuf == NULL)
+    {
+        SEGGER_RTT_printf(0,"pointer is null\r\n");
+        return 0;
+    }
+    
+    if(ringBuf->in == ringBuf->out)   //??????????????
+    {
+//		SEGGER_RTT_printf(0,"Ring buffer is Empty\r\n");
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+
+
+
+/**
+ - @brief:         ????????????
+ - @param[in]:     None
+ - @retval[out]:   None
+ - @note:            
+ - @author:       AresXu
+ - @version:      v1.0.0
+*/
+char WriteOneByteToRingBuffer(stRingBuff *ringBuf,char data)
+{
+	if (ringBuf == NULL)
+    {
+        SEGGER_RTT_printf(0,"pointer is null\r\n");
+        return 0;//
+    }
+    
+    if(IsRingBufferFull(ringBuf))   //????????????
+    {
+        return FALSE;
+    }
+
+    ringBuf->buffer[ringBuf->in] = data;
+    ringBuf->in = (++ringBuf->in) % RING_BUFF_SIZE;    //????
+	return TRUE;
+}
+/**
+ - @brief:         ????????????
+ - @param[in]:     None
+ - @retval[out]:   None
+ - @note:            
+ - @author:       AresXu
+ - @version:      v1.0.0
+*/
+char ReadOneByteFromRingBuffer(stRingBuff *ringBuf,char *data)
+{
+	if (ringBuf == NULL)
+    {
+        SEGGER_RTT_printf(0,"pointer is null\r\n");
+        return 0;//;
+    }
+    
+    if(IsRingBufferEmpty(ringBuf))    //???????????
+    {
+        return FALSE;
+    }
+
+    *data = ringBuf->buffer[ringBuf->out];
+    ringBuf->out = (++ringBuf->out) % RING_BUFF_SIZE;    //????
+
+    return TRUE;
+} 
+
+
+/**
+ * @brief:         ?len??????????
+ * @param[in]:     None
+ * @retval[out]:   None
+ * @note:            
+ * @author:        AresXu
+ * @version:       v1.0.0
+*/
+void WriteRingBuffer(stRingBuff *ringBuf,char *writeBuf,unsigned int len)
+{
+    unsigned int i;
+	
+	if (ringBuf == NULL)
+    {
+        SEGGER_RTT_printf(0,"pointer is null\r\n");
+        return;
+    }
+    
+    for(i = 0; i < len; i++)
+    {
+        WriteOneByteToRingBuffer(ringBuf,writeBuf[i]);
+    }
+}
+/**
+ * @brief:         ???????len??????
+ * @param[in]:     None
+ * @retval[out]:   None
+ * @note:            
+ * @author:       AresXu
+ * @version:      v1.0.0
+*/
+void ReadRingBuffer(stRingBuff *ringBuf,char *readBuf,unsigned int len)
+{
+    unsigned int i;
+    
+	if (ringBuf == NULL)
+    {
+        SEGGER_RTT_printf(0,"pointer is null\r\n");
+        return;
+    }
+    
+    for(i = 0; i < len; i++)
+    {
+        ReadOneByteFromRingBuffer(ringBuf,&readBuf[i]);
+    }
+}
+/**
+  * @brief:         ?????????
+  * @param[in]:     None
+  * @retval[out]:   None
+  * @note:            
+  * @author:        AresXu
+  * @version:       v1.0.0
+*/
+int GetRingBufferLength(stRingBuff *ringBuf)
+{
+    if (ringBuf == NULL)
+    {
+        SEGGER_RTT_printf(0,"pointer is null\r\n");
+        return 0;//;
+    }
+
+    return (ringBuf->in - ringBuf->out + RING_BUFF_SIZE) % RING_BUFF_SIZE;
+}
+
+static stRingBuff g_stRingBuffer = {0,0,0};
+u8 g_recvFinshFlag = 0;
+
+stRingBuff *GetRingBufferStruct(void)
+{
+	return &g_stRingBuffer;
+}
+
+u8 *IsUsart1RecvFinsh(void)
+{
+	return &g_recvFinshFlag;
+}
+
+
+void USART1_IRQHandler(void)
+{ 
+    if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
+    {
+        char *buf_new;                  //??×?·???
+
+        //USART_REC_Queue* queue_new;     //??????????               
+
+        u16 len;
+
+       
+
+        USART1->DR;                                       //??????????×?????????±???????·??ò??????????????±ê????
+
+        USART_ClearITPendingBit(USART1, USART_IT_IDLE);                  //??????
+
+        DMA_Cmd(DMA1_Channel5, DISABLE);                                 //??±?DMA1?¨??3
+
+       
+        len =  RING_BUFF_SIZE- DMA_GetCurrDataCounter(DMA1_Channel5);    //?????????¤??USART1_REC_len
+
+			
+			
+			WriteRingBuffer(GetRingBufferStruct(),(char*)USART1_REC_buf,len);	
+			g_recvFinshFlag = 1; 
+			
+
+
+
+        DMA1_Channel5->CNDTR = RING_BUFF_SIZE;                           //????DMA1?¨??3?????????÷USART1_REC_len
+
+        DMA_Cmd(DMA1_Channel5, ENABLE);                                  //????DMA1?¨??3
+
+    }
+
+}
